@@ -1,0 +1,67 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{minted}
+
+
+\title{Houston}
+
+ 
+\begin{document}
+
+\maketitle
+	
+	
+\begin{abstract}
+Houston is a mission control tool for robotic systems... 
+\end{abstract}
+	
+	
+\section{Introduction}
+...
+\section{JSON input}
+...
+\subsection{Mission Parameters}
+\paragraph{}
+Mission parameters are a set of values that represent the expected behavior of a system. Such values can change depending in the mission type. Our goal is to be as flexible as possible. We have accounted for robot type, launch file \footnote{not so much for ArduCopter but it can be expanded to work with}, map, and the mission type which describes the mission in detail.
+
+\subsection{Quality Attributes}
+\paragraph{}
+Having data available regarding the performance of the system allows us to understand the system and its mission performance. It can also provide us with some needed data for the later development of automatic semi-directed test generation. Some examples of quality attributes are:
+\begin{itemize}
+	\itemsep-.5em
+	\item Time taken
+	\item Power consumption 
+	\item Max height 
+	\item Min height (previous to land command)
+	\item ...		
+\end{itemize}
+
+\subparagraph{}
+More quality attributes to be added as we discover more interesting properties.
+
+\subsection{Intents}
+\paragraph{}
+Intents are expectations for the system under test. Intents can vary depending on the given mission. They can also bound a mission. For example if a given system exceeds a marked height, the final report marks such an event as a ``unmet intent". Providing the mission with intents can help us later generate better tests for the system (as with quality attributes). Example for intents are:
+\begin{itemize}
+	\itemsep-.5em
+	\item Finish in a given time frame
+	\item Finish using less than a given percentage of battery  
+	\item Boundaries in height (previous to land command)
+	\item ...		
+\end{itemize}
+\subparagraph{}
+More quality attributes will added as we discover more interesting properties
+
+\subsection{Failure Flags}
+\paragraph{}
+As with intents, failure flags bound a mission, with the difference that if such ``intent" is unmet, the mission stops and immediately marks the test as failed.  
+\section{Running Houston}
+...
+\section{Understanding Reports}
+...
+\section{Future}
+...
+
+
+
+	
+\end{document}

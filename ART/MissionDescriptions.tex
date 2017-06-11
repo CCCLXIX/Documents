@@ -1,0 +1,241 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{minted}
+
+
+\title{Mission Examples for ArduCopter}
+
+ 
+\begin{document}
+
+\maketitle
+	
+	
+\begin{abstract}
+In this short paper we present a set of missions for ArduCopter, an open-source UAV controller. The need for such missions comes from the main goal of
+automatically generating high quality integration test suites for robotic systems.  
+\end{abstract}
+	
+	
+\section{Introduction}
+Our long term goal is to automatically generate test suites for robotic systems. To accomplish our objective we need a set of predefined missions that would allow us to study the target system, ArduCopter. Such missions should be flexible enough to allow configurable parameters, quality attribute requests, and multiple intents. The layout of this short paper is as follow: Section 1.1 briefly describes the targeted system. Sections 1.2, 1.3, 1.4 and 1.5 describe parameters, quality attributes, intents, and failure flags respectively. Sections 2 describes a set of missions and section 3 presents future possible missions.     
+	
+\subsection{ArduCopter}
+\paragraph{}
+ArduCopter is a flexible and robust UAV controller,  independent of any hardware platform, meaning that it can be used in multiple scenarios. Additionally ArduCopter can be linked and controlled with ROS (Robot Operating System). We can use the ROS framework to monitor, control and test the targeted system. ArduCopter can also be run in simulation, important for our purposes.  
+	
+\subsection{Mission Parameters}
+\paragraph{}
+Mission parameters are a set of values that represent the expected behavior of a system. Such values can change depending in the mission type. Our goal is to be as flexible as possible. We have accounted for robot type, launch file \footnote{not so much for ArduCopter but it can be expanded to work with}, map, and the mission type which describes the mission in detail.
+	
+\subsection{Quality Attributes}
+\paragraph{}
+Having data available regarding the performance of the system allows us to understand the system and its mission performance. It can also provide us with some needed data for the later development of automatic semi-directed test generation. Some examples of quality attributes are:
+\begin{itemize}
+\itemsep-.5em
+\item Time taken
+\item Power consumption 
+\item Max height 
+\item Min height (previous to land command)
+\item ...		
+\end{itemize}
+	
+\subparagraph{}
+More quality attributes to be added as we discover more interesting properties.
+	
+\subsection{Intents}
+\paragraph{}
+Intents are expectations for the system under test. Intents can vary depending on the given mission. They can also bound a mission. For example if a given system exceeds a marked height, the final report marks such an event as a ``unmet intent". Providing the mission with intents can help us later generate better tests for the system (as with quality attributes). Example for intents are:
+\begin{itemize}
+\itemsep-.5em
+\item Finish in a given time frame
+\item Finish using less than a given percentage of battery  
+\item Boundaries in height (previous to land command)
+\item ...		
+\end{itemize}
+\subparagraph{}
+More quality attributes will added as we discover more interesting properties
+	
+\subsection{Failure Flags}
+\paragraph{}
+As with intents, failure flags bound a mission, with the difference that if such ``intent" is unmet, the mission stops and immediately marks the test as failed.  
+	
+\section{Example Missions}
+We now present three missions, each with an example JSON file. We use JSON files to pass all the mission information to our mission control tool \footnote{Huston (yet to be introduced)}, which executes and monitors the mission. 
+
+\subsection{Point to Point (PTP)}
+A simple but necessary mission is ``point to point" which commands the system to start at a given location then move to another position. An example of this mission, in JSON format, is following:
+	
+\begin{minted}
+[fontsize=\footnotesize,
+baselinestretch=1,
+framesep=1mm]
+{json}
+{
+"MDescription":{
+    "RobotType":  "ArduCopter",
+    "LaunchFile": "robotest.launch",
+    "Map": "Airport.world",
+    "Mission":{
+            "Name": "JustARide",
+            "Action":{
+                "Type":"PTP",
+                "alt":  "20", //Meters
+                "x":    "3.0",
+                "y":    "1.5",
+                "z":    "0.0",
+                "x_d":  "6.7",
+                "y_d":  "7.9",
+                "z_d":  "0.0"
+            },
+            "QualityAttributes":{
+	            "ReportRate":"6",
+	            "Time":      "True",
+	            "Battery":   "False",
+	            "MaxHeight": "True",
+	            "MinHeight": "True"
+            },
+            "Intents":{
+                "Time":      "<10", //Seconds 
+                "Battery":   "<.6", //Percentage 
+                "MaxHeight": "20", //Meters 
+                "MinHeight": ""
+            },
+            "FailureFlags":{
+                "Time":           "20",
+                "Battery":        "90",
+                "SystemShutdown": "True"	
+            }
+        }
+    }
+}
+\end{minted}
+	  
+	
+\subsection{Multiple Point to Points (MPTP)}
+Similar to PTP, MPTP is a simple mission where there are multiple locations for the system to visit. It can be described as a collection of PTPs. This mission can help us study the performance of the system under different altitudes. An example would be the following:  
+	
+\begin{minted}
+[fontsize=\footnotesize,
+baselinestretch=1,
+framesep=1mm]
+{json}
+{
+"MDescription":{
+    "RobotType":  "ArduCopter",
+    "LaunchFile": "robotest.launch",
+    "Map":        "Airport.world",
+    "Mission":{
+        "Name":   "VisitingTheFam",
+        "Action":{
+            "Type":      "MPTP",
+            "Locations": "2",
+            "1":{
+                "alt":  "20", //Meters 
+                "x":    "3.0",
+                "y":    "1.5",
+                "z":    "0.0",
+                "x_d":  "6.7",
+                "y_d":  "7.9",
+                "z_d":  "0.0"
+            },
+            "2":{
+                "alt":  "10",
+                "x":    "6.7",
+                "y":    "7.9",
+                "z":    "0.0",
+                "x_d":  "3.0",
+                "y_d":  "1.5",
+                "z_d":  "0.0"
+            }
+        },
+        "QualityAttributes":{
+            "ReportRate":"2",
+            "Time":      "True",
+            "Battery":   "False",
+            "MaxHeight": "True",
+            "MinHeight": "True"
+        },
+        "Intents":{
+            "Time":      "<10", //Seconds 
+            "Battery":   "<.6", //Percentage 
+            "MaxHeight": "20", //Meters 
+            "MinHeight": ""
+        },
+        "FailureFlags":{
+            "Time":           "20",
+            "Battery":        "90",
+            "SystemShutdown": "True"	
+        }
+    }
+}
+	
+\end{minted}
+	
+\subsection{Extraction}
+Similar to PTP, in the ``extraction" mission, the system goes to a given location, lands,  waits a set amount of time, then returns to its starting position. For example:
+	
+\begin{minted}
+[fontsize=\footnotesize,
+baselinestretch=1,
+framesep=1mm]
+{json}
+{
+"MDescription":{
+    "RobotType":  "ArduCopter",
+    "LaunchFile": "robotest.launch",
+    "Map":        "Airport.world",
+    "Mission":{
+        "Name":      "VisitingTheFam",
+        "Action":{
+            "Type":  "Extraction",
+                "alt":   "20", //Meters
+                "wait"   "3", //seconds
+                "x":     "20.0",
+                "y":     "17.5",
+                "z":     "0.0",
+                "x_d":   "6.7",
+                "y_d":   "7.9",
+                "z_d":   "0.0"
+        },
+        "QualityAttributes":{
+            "ReportRate":"3",
+            "Time":      "True",
+            "Battery":   "False",
+            "MaxHeight": "True",
+            "MinHeight": "True"
+        },
+        "Intents":{
+            "Time":      "<10", //Seconds 
+            "Battery":   "<10", //Percentage 
+            "MaxHeight": "20", //Meters 
+            "MinHeight": ""
+        },
+        "FailureFlags":{
+            "Time":           "20",
+            "Battery":        "90",
+            "SystemShutdown": "True"	
+        }
+    }
+}
+		
+\end{minted}
+		
+	
+	
+	
+\section{Future}
+There are many possibilities for missions or combinations of missions. Ideas include:
+\begin{itemize}
+\itemsep-.5em
+\item Photograph of a given location
+\item Check for the highest object in a given radius   
+\item Land in the highest object found
+\item Follow an object
+\item Recover from all the rotors stopping at the same time 
+\item Combination of missions 		
+\end{itemize}
+The reason such missions have not been presented here with examples is that we are  unsure of the extent of control that we might have over the system. For the last point, there is a possibility of combining missions by treating each mission as an action, then mixing them with a goal on mind.  
+	 
+
+	
+\end{document}

@@ -1,0 +1,14 @@
+\documentclass[11pt, a4paper]{article}
+\begin{document}
+\title{Report Analyzer}
+\maketitle
+
+
+\begin{large}
+Houston is now capable of running multiple missions in sequence and annexing the resultant reports into one. We can now generate large amounts of metrics to study the system's performance and behavior. 
+
+We can start by looking into patterns that might have been generated in a test session. As an example; we command Houston to run x random missions, and after analyzing the output we see that all the missions after y are flagged as failed. This is interesting because we see that something goes wrong after execution of mission y. We yet do not know if the problem is directly linked to mission y or if the problem manifests due to a multiple set of factors. Our report analyzer would look into the exact action that was not completed and that caused the mission failures. After analyzing the data we see that all the missions failed because the takeoff command was not completed. Looking more into the metrics we see that the gap between the expected altitude (altitude for takeoff) and the altitude where the system stanch grew as the missions progressed. This can give us good insight of an internal problem that manifests overtime. We can then study what parts of the system's source code is linked with the takeoff command then evaluate and correct if necessary.  
+
+
+\end{large}
+\end{document}

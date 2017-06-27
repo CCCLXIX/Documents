@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage{syntax}
+
+\begin{document}
+	\paragraph{Default settings}
+	\begin{grammar}
+		
+		<mission> ::= changemode <mode> <actions>
+		
+		<actions> ::= <action> | <action> <actions>
+		
+		<action> ::= <navigation> | <do> | change-mode <mode>
+		
+		<navigation> ::= <goto> | <takeoff> | <land> | <loiter> | <change-alt>
+		
+		<do> ::= <change-speed> | <set-home> | <camera> 
+		
+		<camera> ::= <control> | <mount-control> 
+		
+		<control> ::= (<on-off>, <focus-lock>, <shoot> )
+		
+		<mount-control> ::= (<pitch>, <roll>, <yaw>)
+		
+		<loiter> ::= <turns> | (<time>)
+		
+		<change-altitude> ::= (<altitude>)
+		
+		<turns> ::= (<number-turns>, <radius>)
+		
+		<goto> ::= (<latitude>, <longitude>, <altitude> ) 
+		
+		<takeoff> ::= (<altitude>)
+		
+		<land> ::= (<latitude>, <longitude>)
+		
+		<mode> ::= guided | stabilize | loiter | alt-hold | RTL | brake | circle
+		
+		
+		
+		
+		
+		<extraction> ::= 
+		
+	\end{grammar}
+
+\end{document}

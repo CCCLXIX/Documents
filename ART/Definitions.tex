@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage{amsmath}
+\title{Definitions}
+
+
+\begin{document}
+\maketitle
+
+
+\section{Distance}
+We use the northing/easting approach to find the distance between two coordinates. This approach works best for not so long distances. $r_{e}$ represents the radius of the earth, the mean is 6371km. 
+
+
+\[\delta = \sqrt((2r_{e}\pi\Delta_{ns})^2 + (2r_{e}\pi\Delta_{ew})^2) \cdot 1000\] 
+
+
+\section{Time and Battery}
+We assume that we get a set of values representing the battery and time consumption after traveling a meter. We find the standard deviation then using the distance formula we bound the expected battery usage. In this case $w$ represents a buffer value, is intended to be used as a range.
+
+\[ \mu = \dfrac{\sum_{i = 1}^{n}{x_{i}}}{n} \]
+
+\[ \sigma = \dfrac{\sqrt{\sum_{i = 1}^{n}(x_{i} - \mu)^2}}{n} \]
+
+\[ (\mu - \sigma - \dfrac{w}{2})\cdot\delta  < \mu\cdot\delta < (\mu+\sigma + \dfrac{w}{2} )\cdot\delta  \]
+
+
+
+\end{document}
